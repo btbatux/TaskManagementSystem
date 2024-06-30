@@ -132,4 +132,10 @@ public class TaskService {
        return taskRepository.countAllBy();
     }
 
+    public Long countAllCompletedTasks() {
+        return taskRepository.countByCompletedIsTrue();
+    }
+
+
+
 }

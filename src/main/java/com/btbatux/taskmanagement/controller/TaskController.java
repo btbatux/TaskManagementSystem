@@ -103,5 +103,10 @@ public class TaskController {
         return taskService.countAllTask();
     }
 
+    @GetMapping("/count-completed-task")
+    public Long getCompletedTasksCount() {
+        return taskService.countAllCompletedTasks();
+    }
+
 }
 
