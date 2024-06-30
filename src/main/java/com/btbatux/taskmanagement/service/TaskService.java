@@ -127,4 +127,9 @@ public class TaskService {
         return notCompletedTasks.stream().map(task -> modelMapper.map(task, TaskResponseDto.class)).collect(Collectors.toList());
     }
 
+    //Toplam görev sayısı
+    public Long countAllTask() {
+       return taskRepository.countAllBy();
+    }
+
 }

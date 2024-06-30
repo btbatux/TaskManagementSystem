@@ -31,5 +31,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("SELECT t FROM Task t WHERE t.completed = false")
     List<Task> findByCompletedIsFalse();
 
+    Long countAllBy();
+    Long countByCompletedIsTrue();
+    Long countByCompletedIsFalse();
 
 }

@@ -98,6 +98,10 @@ public class TaskController {
        return new ResponseEntity<>(allNotCompletedTaskList, HttpStatus.OK);
     }
 
+    @GetMapping("/count-all")
+    public Long getAllTasksCount() {
+        return taskService.countAllTask();
+    }
 
 }
 
