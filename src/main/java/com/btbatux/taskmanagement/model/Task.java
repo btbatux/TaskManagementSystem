@@ -14,10 +14,13 @@ public class Task {
 
     @Column(nullable = false)
     private String title;
-
     private String description;
     private LocalDateTime startDate; // Yeni eklenen başlangıç tarihi alanı
     private boolean completed;
+
+    @ManyToOne
+    @JoinColumn(name ="user_id")
+    private User user;
 
     public LocalDateTime getStartDate() {
         return startDate;

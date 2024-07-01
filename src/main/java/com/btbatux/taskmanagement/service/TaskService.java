@@ -4,11 +4,15 @@ import com.btbatux.taskmanagement.dto.TaskResponseDto;
 import com.btbatux.taskmanagement.dto.TaskUpdateDto;
 import com.btbatux.taskmanagement.exception.ResourceNotFoundException;
 import com.btbatux.taskmanagement.model.Task;
+import com.btbatux.taskmanagement.model.User;
 import com.btbatux.taskmanagement.repository.TaskRepository;
+import com.btbatux.taskmanagement.repository.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -21,10 +25,12 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
     private final ModelMapper modelMapper;
+    private final UserRepository userRepository;
 
-    public TaskService(TaskRepository taskRepository, ModelMapper modelMapper) {
+    public TaskService(TaskRepository taskRepository, ModelMapper modelMapper, UserRepository userRepository) {
         this.taskRepository = taskRepository;
         this.modelMapper = modelMapper;
+        this.userRepository = userRepository;
     }
 
 
@@ -63,10 +69,16 @@ public class TaskService {
     public TaskResponseDto saveTask(TaskRequestDto taskRequestDto) {
         // TaskDTO'yu Task entity'sine dönüştür
         Task task = modelMapper.map(taskRequestDto, Task.class);
-        // Task entity'sini kaydet
-        Task savedTask = taskRepository.save(task);
-        // Kaydedilen Task entity'sini TaskDTO'ya dönüştür ve geri döndür
-        return modelMapper.map(savedTask, TaskResponseDto.class);
+
+        Optional<User> user = userRepository.findById(taskRequestDto.getUserId());
+        if(user.isPresent())
+        {
+        task = taskRepository.save(task);
+        }
+        return modelMapper.map(task,TaskResponseDto.class);
+
+
+
     }
 
 

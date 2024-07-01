@@ -12,6 +12,16 @@ public class TaskRequestDto {
     private String description;
     private boolean completed;
     private LocalDateTime startDate; // Yeni eklenen başlangıç tarihi alanı
+    private Long userId;
+
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public LocalDateTime getStartDate() {
         return startDate;

@@ -14,10 +14,18 @@ public class TaskResponseDto {
     private String description;
     private LocalDateTime startDate; // Yeni eklenen başlangıç tarihi alanı
     private boolean completed;
+    private Long userId;
 
 
+    public Long getUserId() {
+        return userId;
+    }
 
-//    public int getId() {
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    //    public int getId() {
 //        return id;
 //    }
 
