@@ -1,20 +1,21 @@
 package com.btbatux.taskmanagement.dto;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class TaskUpdateDto {
-    private int id;
+    private UUID id;
     private String title;
     private String description;
     private LocalDateTime startDate; // Yeni eklenen başlangıç tarihi alanı
     private boolean completed;
 
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

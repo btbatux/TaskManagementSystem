@@ -1,18 +1,20 @@
 package com.btbatux.taskmanagement.repository;
 
 import com.btbatux.taskmanagement.model.Task;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * TaskRepository, Task entity için CRUD işlemlerini sağlayan bir arayüzdür.
  * JpaRepository'den extend edilmiştir ve temel CRUD işlemleri için gerekli metotları sağlar.
  */
 @Repository
-public interface TaskRepository extends JpaRepository<Task, Long> {
+public interface TaskRepository extends JpaRepository<Task,UUID> {
 
     //Eskiden yeniye sırala
     List<Task> findAllByOrderByStartDateAsc();
@@ -32,7 +34,12 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByCompletedIsFalse();
 
     Long countAllBy();
+
     Long countByCompletedIsTrue();
+
+    @Transactional
+    int deleteByTitle(String title);
+
     Long countByCompletedIsFalse();
 
 }

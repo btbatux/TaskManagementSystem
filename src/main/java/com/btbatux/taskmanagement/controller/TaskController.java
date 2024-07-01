@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -41,9 +42,21 @@ public class TaskController {
      * @return ResponseEntity<Task> - bulunan görev
      */
     @GetMapping("/{id}")
-    public ResponseEntity<TaskResponseDto> getTaskById(@PathVariable Long id) {
+    public ResponseEntity<TaskResponseDto> getTaskById(@PathVariable UUID id) {
         TaskResponseDto taskResponseDto = taskService.getTaskById(id);
         return new ResponseEntity<>(taskResponseDto, HttpStatus.OK);
+    }
+
+    @DeleteMapping  ("/delete-by-id/{id}")
+    public ResponseEntity<UUID> deleteTaskById(@PathVariable UUID id) {
+        taskService.deleteTask(id);
+        return new ResponseEntity<>(id,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/title/{title}")
+    public ResponseEntity<String> deleteTaskByTitle(@PathVariable String title) {
+        taskService.deleteByTitle(title);
+        return new ResponseEntity<>("Silindi.",HttpStatus.OK);
     }
 
 
@@ -54,8 +67,8 @@ public class TaskController {
      * @return ResponseEntity<TaskDTO> - oluşturulan görev
      */
     @PostMapping("/createTask")
-    public ResponseEntity<TaskRequestDto> createTask(@RequestBody TaskRequestDto taskRequestDto) {
-        TaskRequestDto createdTask = taskService.saveTask(taskRequestDto);
+    public ResponseEntity<TaskResponseDto> createTask(@RequestBody TaskRequestDto taskRequestDto) {
+        TaskResponseDto createdTask = taskService.saveTask(taskRequestDto);
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 
@@ -103,7 +116,7 @@ public class TaskController {
         return taskService.countAllTask();
     }
 
-    @GetMapping("/count-completed-task")
+    @GetMapping("/count-completed")
     public Long getCompletedTasksCount() {
         return taskService.countAllCompletedTasks();
     }

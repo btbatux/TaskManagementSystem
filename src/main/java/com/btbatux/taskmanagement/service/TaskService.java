@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -48,7 +49,7 @@ public class TaskService {
      * @param id - görev ID'si
      * @return Optional<Task> - bulunan görev (varsa)
      */
-    public TaskResponseDto getTaskById(Long id) {
+    public TaskResponseDto getTaskById(UUID id) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Görev Bulunamadı. " + id));
         return modelMapper.map(task, TaskResponseDto.class);
     }
@@ -59,13 +60,13 @@ public class TaskService {
      * @param taskRequestDto - kaydedilecek veya güncellenecek görev
      * @return TaskDto - kaydedilen veya güncellenen görev
      */
-    public TaskRequestDto saveTask(TaskRequestDto taskRequestDto) {
+    public TaskResponseDto saveTask(TaskRequestDto taskRequestDto) {
         // TaskDTO'yu Task entity'sine dönüştür
         Task task = modelMapper.map(taskRequestDto, Task.class);
         // Task entity'sini kaydet
         Task savedTask = taskRepository.save(task);
         // Kaydedilen Task entity'sini TaskDTO'ya dönüştür ve geri döndür
-        return modelMapper.map(savedTask, TaskRequestDto.class);
+        return modelMapper.map(savedTask, TaskResponseDto.class);
     }
 
 
@@ -83,11 +84,16 @@ public class TaskService {
      *
      * @param id - silinecek görev ID'si
      */
-    public void deleteTask(Long id) {
+    public void deleteTask(UUID id) {
         if (!taskRepository.existsById(id)) {
             throw new ResourceNotFoundException("Görev bulunamadı");
         }
         taskRepository.deleteById(id);
+    }
+
+    public boolean deleteByTitle(String title) {
+       int deleteCount = taskRepository.deleteByTitle(title);
+        return deleteCount > 0;
     }
 
     //Eskiden yeniye
