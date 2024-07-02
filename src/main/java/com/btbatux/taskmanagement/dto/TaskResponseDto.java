@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 
 public class TaskResponseDto {
 
-    // private int id;
     private String title;
     private String description;
     private LocalDateTime startDate; // Yeni eklenen başlangıç tarihi alanı
@@ -24,15 +23,6 @@ public class TaskResponseDto {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
-
-    //    public int getId() {
-//        return id;
-//    }
-
-//    public void setId(int id) {
-//        this.id = id;
-//    }
-
 
     public LocalDateTime getStartDate() {
         return startDate;

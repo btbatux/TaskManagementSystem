@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@Table(name = "TASKS")
 public class Task {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -18,9 +19,20 @@ public class Task {
     private LocalDateTime startDate; // Yeni eklenen başlangıç tarihi alanı
     private boolean completed;
 
+
+
     @ManyToOne
-    @JoinColumn(name ="user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public LocalDateTime getStartDate() {
         return startDate;

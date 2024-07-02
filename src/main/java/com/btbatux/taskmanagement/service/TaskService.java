@@ -63,23 +63,15 @@ public class TaskService {
     /**
      * Yeni bir görev kaydeder veya mevcut bir görevi günceller.
      *
-     * @param taskRequestDto - kaydedilecek veya güncellenecek görev
-     * @return TaskDto - kaydedilen veya güncellenen görev
+     * @param task - kaydedilecek veya güncellenecek görev DTO'su
+     * @return TaskResponseDto - kaydedilen veya güncellenen görevin DTO'su
      */
-    public TaskResponseDto saveTask(TaskRequestDto taskRequestDto) {
-        // TaskDTO'yu Task entity'sine dönüştür
-        Task task = modelMapper.map(taskRequestDto, Task.class);
-
-        Optional<User> user = userRepository.findById(taskRequestDto.getUserId());
-        if(user.isPresent())
-        {
-        task = taskRepository.save(task);
-        }
-        return modelMapper.map(task,TaskResponseDto.class);
-
-
+    public Task saveTask(Task task) {
+        Task savedTask = taskRepository.save(task);
+        return savedTask;
 
     }
+
 
 
     public TaskResponseDto taskUpdate(TaskUpdateDto taskUpdateDto) {

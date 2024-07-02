@@ -7,10 +7,11 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "users")
+@Table(name = "USERS")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
     private String username;
     private String password;
@@ -18,8 +19,9 @@ public class User {
     private LocalDateTime createDate;
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user")
     private List<Task> tasks;
+
 
     public LocalDateTime getCreateDate() {
         return createDate;

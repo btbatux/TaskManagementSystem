@@ -63,14 +63,14 @@ public class TaskController {
     /**
      * Yeni bir görev oluşturur.
      *
-     * @param taskRequestDto - oluşturulacak görev
+     * @param task - oluşturulacak görev
      * @return ResponseEntity<TaskDTO> - oluşturulan görev
      */
-    @PostMapping("/createTask")
-    public ResponseEntity<TaskResponseDto> createTask(@RequestBody TaskRequestDto taskRequestDto) {
-        TaskResponseDto createdTask = taskService.saveTask(taskRequestDto);
-        return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
-    }
+        @PostMapping("/createTask")
+        public ResponseEntity<Task> createTask(@RequestBody Task task) {
+            Task createdTask = taskService.saveTask(task);
+            return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
+        }
 
 
     /**
