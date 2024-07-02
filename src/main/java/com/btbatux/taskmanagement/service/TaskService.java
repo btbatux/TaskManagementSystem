@@ -1,4 +1,5 @@
 package com.btbatux.taskmanagement.service;
+
 import com.btbatux.taskmanagement.dto.TaskRequestDto;
 import com.btbatux.taskmanagement.dto.TaskResponseDto;
 import com.btbatux.taskmanagement.dto.TaskUpdateDto;
@@ -32,7 +33,6 @@ public class TaskService {
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
     }
-
 
 
     /**
@@ -73,7 +73,6 @@ public class TaskService {
     }
 
 
-
     public TaskResponseDto taskUpdate(TaskUpdateDto taskUpdateDto) {
         Task convertTask = modelMapper.map(taskUpdateDto, Task.class);
 
@@ -96,11 +95,11 @@ public class TaskService {
     }
 
     public boolean deleteByTitle(String title) {
-       int deleteCount = taskRepository.deleteByTitle(title);
+        int deleteCount = taskRepository.deleteByTitle(title);
         return deleteCount > 0;
     }
 
-    //Eskiden yeniye
+    //Eskiden yeniye tüm userlar için
     public List<TaskResponseDto> getAllTaskOrderByStartDateOld() {
         List<Task> taskList = taskRepository.findAllByOrderByStartDateAsc();
         if (taskList.isEmpty()) {
@@ -110,7 +109,7 @@ public class TaskService {
         return taskList.stream().map(task -> modelMapper.map(task, TaskResponseDto.class)).collect(Collectors.toList());
     }
 
-    //Yeniden eskiye
+    //Yeniden eskiye tüm userlar için
     public List<TaskResponseDto> getAllTaskOrderByStartDateNew() {
         List<Task> taskList = taskRepository.findAllByOrderByStartDateDesc();
         if (taskList.isEmpty()) {
@@ -119,7 +118,7 @@ public class TaskService {
         return taskList.stream().map(task -> modelMapper.map(task, TaskResponseDto.class)).collect(Collectors.toList());
     }
 
-    //Tamamlanmış görevler
+    //Tamamlanmış görevler tüm userlar için
     public List<TaskResponseDto> getAllCompletedTasks() {
         List<Task> completedTasks = taskRepository.findByCompletedIsTrue();
         if (completedTasks.isEmpty()) {
@@ -128,7 +127,7 @@ public class TaskService {
         return completedTasks.stream().map(task -> modelMapper.map(task, TaskResponseDto.class)).collect(Collectors.toList());
     }
 
-    //Tamamlanmamış görevler
+    //Tamamlanmamış görevler tüm userlar için
     public List<TaskResponseDto> getAllNotCompletedTasks() {
         List<Task> notCompletedTasks = taskRepository.findByCompletedIsFalse();
         if (notCompletedTasks.isEmpty()) {
@@ -137,15 +136,24 @@ public class TaskService {
         return notCompletedTasks.stream().map(task -> modelMapper.map(task, TaskResponseDto.class)).collect(Collectors.toList());
     }
 
-    //Toplam görev sayısı
+    //Toplam görev sayısı tüm userlar için
     public Long countAllTask() {
-       return taskRepository.countAllBy();
+        return taskRepository.countAllBy();
     }
 
     public Long countAllCompletedTasks() {
         return taskRepository.countByCompletedIsTrue();
     }
 
+    //Userin tamamladığı görevler
+    public List<TaskResponseDto> findByUserIdAndCompletedTrue(Long userId) {
+        List<Task> completedTasks = taskRepository.findByUserIdAndCompletedTrue(userId);
+        if(completedTasks.isEmpty())
+        {
+           throw new ResourceNotFoundException("Tamamlanmış Görev Yok.");
+        }
+        return completedTasks.stream().map(task -> modelMapper.map(task, TaskResponseDto.class)).collect(Collectors.toList());
+    }
 
 
 }

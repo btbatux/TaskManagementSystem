@@ -7,14 +7,14 @@ public class UserResponseDto {
     private String username;
     private String email;
     private LocalDateTime createDate;
-    private Long user_id;
+    private Long id;
 
-    public Long getUser_id() {
-        return user_id;
+    public Long getId() {
+        return id;
     }
 
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public LocalDateTime getCreateDate() {

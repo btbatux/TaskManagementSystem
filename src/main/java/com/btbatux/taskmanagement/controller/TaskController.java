@@ -53,10 +53,10 @@ public class TaskController {
         return new ResponseEntity<>(id,HttpStatus.OK);
     }
 
-    @DeleteMapping("/title/{title}")
+    @DeleteMapping("/delete-by-title/{title}")
     public ResponseEntity<String> deleteTaskByTitle(@PathVariable String title) {
         taskService.deleteByTitle(title);
-        return new ResponseEntity<>("Silindi.",HttpStatus.OK);
+        return new ResponseEntity<>(title+" Başlıklı Görev Silindi.",HttpStatus.OK);
     }
 
 
@@ -86,6 +86,7 @@ public class TaskController {
     }
 
 
+    //Tüm Görevlerin en eskiden en yeniye sıralaması
     @GetMapping("/old-by-start-date")
     public ResponseEntity<List<TaskResponseDto>> getAllTasksOrderByStartDateOld() {
         List<TaskResponseDto> allTaskOrderByStartDateOldList = taskService.getAllTaskOrderByStartDateOld();
@@ -93,32 +94,45 @@ public class TaskController {
 
     }
 
+    //Tüm Görevlerin en yeniden en eskiye sıralaması
     @GetMapping("/new-by-start-date")
     public ResponseEntity<List<TaskResponseDto>> getAllTasksOrderByStartDateNew() {
         List<TaskResponseDto> allTaskOrderByStartDateNewList = taskService.getAllTaskOrderByStartDateNew();
         return new ResponseEntity<>(allTaskOrderByStartDateNewList, HttpStatus.OK);
     }
 
+    //Tüm Userların tamamLADIĞI görevler
     @GetMapping("/completed-task")
     public ResponseEntity<List<TaskResponseDto>> getCompletedTasks() {
         List<TaskResponseDto> allCompletedTaskList = taskService.getAllCompletedTasks();
         return new ResponseEntity<>(allCompletedTaskList, HttpStatus.OK);
     }
 
+    //Tüm Userların tamamLAMADIĞI görevler
     @GetMapping("/not-completed")
     public ResponseEntity<List<TaskResponseDto>> getNotCompletedTasks() {
        List<TaskResponseDto> allNotCompletedTaskList =  taskService.getAllNotCompletedTasks();
        return new ResponseEntity<>(allNotCompletedTaskList, HttpStatus.OK);
     }
 
+    //Tüm Userların toplam görev sayısı
     @GetMapping("/count-all")
     public Long getAllTasksCount() {
         return taskService.countAllTask();
     }
 
+    //Tüm Userların tamamladığı görev sayısı
     @GetMapping("/count-completed")
     public Long getCompletedTasksCount() {
         return taskService.countAllCompletedTasks();
+    }
+
+    //User'in tamamladığı görevler
+    @GetMapping("/completed-tasks/{userId}")
+    public ResponseEntity<List<TaskResponseDto>> getCompletedTasks(@PathVariable Long userId) {
+        List<TaskResponseDto> taskResponseDtoList = taskService.findByUserIdAndCompletedTrue(userId);
+        return new ResponseEntity<>(taskResponseDtoList, HttpStatus.OK);
+
     }
 
 }
