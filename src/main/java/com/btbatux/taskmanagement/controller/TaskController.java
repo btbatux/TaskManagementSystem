@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -47,18 +48,6 @@ public class TaskController {
         return new ResponseEntity<>(taskResponseDto, HttpStatus.OK);
     }
 
-    @DeleteMapping  ("/delete-by-id/{id}")
-    public ResponseEntity<UUID> deleteTaskById(@PathVariable UUID id) {
-        taskService.deleteTask(id);
-        return new ResponseEntity<>(id,HttpStatus.OK);
-    }
-
-    @DeleteMapping("/delete-by-title/{title}")
-    public ResponseEntity<String> deleteTaskByTitle(@PathVariable String title) {
-        taskService.deleteByTitle(title);
-        return new ResponseEntity<>(title+" Başlıklı Görev Silindi.",HttpStatus.OK);
-    }
-
 
     /**
      * Yeni bir görev oluşturur.
@@ -66,15 +55,29 @@ public class TaskController {
      * @param task - oluşturulacak görev
      * @return ResponseEntity<TaskDTO> - oluşturulan görev
      */
-        @PostMapping("/createTask")
-        public ResponseEntity<Task> createTask(@RequestBody Task task) {
-            Task createdTask = taskService.saveTask(task);
-            return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
-        }
+    @PostMapping("/createTask")
+    public ResponseEntity<TaskResponseDto> createTask(@RequestBody Task task) {
+        TaskResponseDto createdTask = taskService.saveTask(task);
+        return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
+    }
+
+
+    @DeleteMapping("/delete-by-id/{id}")
+    public ResponseEntity<UUID> deleteTaskById(@PathVariable UUID id) {
+        taskService.deleteTask(id);
+        return new ResponseEntity<>(id, HttpStatus.OK);
+    }
+
+
+    @DeleteMapping("/delete-by-title/{title}")
+    public ResponseEntity<String> deleteTaskByTitle(@PathVariable String title) {
+        taskService.deleteByTitle(title);
+        return new ResponseEntity<>(title + " Başlıklı Görev Silindi.", HttpStatus.OK);
+    }
 
 
     /**
-     * Yeni bir görev oluşturur.
+     * Görev günceller.
      *
      * @param taskUpdateDto - oluşturulacak görev
      * @return ResponseEntity<TaskResponseDto> - oluşturulan görev
@@ -111,8 +114,8 @@ public class TaskController {
     //Tüm Userların tamamLAMADIĞI görevler
     @GetMapping("/not-completed")
     public ResponseEntity<List<TaskResponseDto>> getNotCompletedTasks() {
-       List<TaskResponseDto> allNotCompletedTaskList =  taskService.getAllNotCompletedTasks();
-       return new ResponseEntity<>(allNotCompletedTaskList, HttpStatus.OK);
+        List<TaskResponseDto> allNotCompletedTaskList = taskService.getAllNotCompletedTasks();
+        return new ResponseEntity<>(allNotCompletedTaskList, HttpStatus.OK);
     }
 
     //Tüm Userların toplam görev sayısı
@@ -126,6 +129,7 @@ public class TaskController {
     public Long getCompletedTasksCount() {
         return taskService.countAllCompletedTasks();
     }
+
 
     //User'in tamamladığı görevler
     @GetMapping("/completed-tasks/{userId}")

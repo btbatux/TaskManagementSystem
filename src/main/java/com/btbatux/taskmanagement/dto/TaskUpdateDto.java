@@ -1,15 +1,27 @@
 package com.btbatux.taskmanagement.dto;
 
+import com.btbatux.taskmanagement.model.User;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
+
 
 public class TaskUpdateDto {
     private UUID id;
     private String title;
     private String description;
-    private LocalDateTime startDate; // Yeni eklenen başlangıç tarihi alanı
+    private LocalDateTime startDate;
     private boolean completed;
-
+//    private Long userId;
+//
+//
+//    public Long getUser() {
+//        return userId;
+//    }
+//
+//    public void setUser(Long userId) {
+//        this.userId = userId;
+//    }
 
     public UUID getId() {
         return id;

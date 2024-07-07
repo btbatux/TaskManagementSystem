@@ -40,8 +40,8 @@ public interface TaskRepository extends JpaRepository<Task,UUID> {
     @Transactional
     int deleteByTitle(String title);
 
+    //Kendisinin tamamladığı görevler
     List<Task> findByUserIdAndCompletedTrue(Long userId);
 
-    Long countByCompletedIsFalse();
 
 }
