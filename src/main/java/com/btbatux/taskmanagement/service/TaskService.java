@@ -1,6 +1,4 @@
 package com.btbatux.taskmanagement.service;
-
-import com.btbatux.taskmanagement.dto.TaskRequestDto;
 import com.btbatux.taskmanagement.dto.TaskResponseDto;
 import com.btbatux.taskmanagement.dto.TaskUpdateDto;
 import com.btbatux.taskmanagement.exception.ResourceNotFoundException;
@@ -9,9 +7,9 @@ import com.btbatux.taskmanagement.model.User;
 import com.btbatux.taskmanagement.repository.TaskRepository;
 import com.btbatux.taskmanagement.repository.UserRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.ResponseEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,6 +25,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
+    private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
     public TaskService(TaskRepository taskRepository, ModelMapper modelMapper, UserRepository userRepository) {
         this.taskRepository = taskRepository;
@@ -69,13 +68,15 @@ public class TaskService {
      * @return TaskResponseDto - kaydedilen veya güncellenen görevin DTO'su
      */
     public TaskResponseDto saveTask(Task task) {
+        logger.info("Task Oluşturma  Servisi "+ task.getUser().getId() + " " + task.getTitle());
         User user = userRepository.findById(task.getUser().getId()).orElseThrow(() ->
                 new ResourceNotFoundException("User not found. " + task.getUser().getId()));
         task.setUser(user);
+        logger.info("Task oluşturma başarılı "+ task.getUser().getId() + " " + task.getUser().getUsername());
         return modelMapper.map(taskRepository.save(task), TaskResponseDto.class);
 
-
     }
+
 
 
     public TaskResponseDto taskUpdate(TaskUpdateDto taskUpdateDto) {
@@ -97,83 +98,83 @@ public class TaskService {
     }
 
 
-/**
- * ID'ye göre bir görevi siler.
- *
- * @param id - silinecek görev ID'si
- */
-public void deleteTask(UUID id) {
-    if (!taskRepository.existsById(id)) {
-        throw new ResourceNotFoundException("Görev bulunamadı");
-    }
-    taskRepository.deleteById(id);
-}
-
-public boolean deleteByTitle(String title) {
-    int deleteCount = taskRepository.deleteByTitle(title);
-    return deleteCount > 0;
-}
-
-//Eskiden yeniye tüm userlar için
-public List<TaskResponseDto> getAllTaskOrderByStartDateOld() {
-    List<Task> taskList = taskRepository.findAllByOrderByStartDateAsc();
-    if (taskList.isEmpty()) {
-        throw new ResourceNotFoundException("Eskiden yeniye Görev bulunamadı");
+    /**
+     * ID'ye göre bir görevi siler.
+     *
+     * @param id - silinecek görev ID'si
+     */
+    public void deleteTask(UUID id) {
+        if (!taskRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Görev bulunamadı");
+        }
+        taskRepository.deleteById(id);
     }
 
-    return taskList.stream().map(task -> modelMapper.map(task, TaskResponseDto.class)).collect(Collectors.toList());
-}
-
-//Yeniden eskiye tüm userlar için
-public List<TaskResponseDto> getAllTaskOrderByStartDateNew() {
-    List<Task> taskList = taskRepository.findAllByOrderByStartDateDesc();
-    if (taskList.isEmpty()) {
-        throw new ResourceNotFoundException("Yeniden Eskiye Görev bulunamadı");
+    public boolean deleteByTitle(String title) {
+        int deleteCount = taskRepository.deleteByTitle(title);
+        return deleteCount > 0;
     }
-    return taskList.stream().map(task -> modelMapper.map(task, TaskResponseDto.class)).collect(Collectors.toList());
-}
 
-//Tamamlanmış görevler tüm userlar için
-public List<TaskResponseDto> getAllCompletedTasks() {
-    List<Task> completedTasks = taskRepository.findByCompletedIsTrue();
-    if (completedTasks.isEmpty()) {
-        throw new ResourceNotFoundException("Tamamlanmış görev bulunamadı");
+    //Eskiden yeniye tüm userlar için
+    public List<TaskResponseDto> getAllTaskOrderByStartDateOld() {
+        List<Task> taskList = taskRepository.findAllByOrderByStartDateAsc();
+        if (taskList.isEmpty()) {
+            throw new ResourceNotFoundException("Eskiden yeniye Görev bulunamadı");
+        }
+
+        return taskList.stream().map(task -> modelMapper.map(task, TaskResponseDto.class)).collect(Collectors.toList());
     }
-    return completedTasks.stream().map(task -> modelMapper.map(task, TaskResponseDto.class)).collect(Collectors.toList());
-}
 
-//Tamamlanmamış görevler tüm userlar için
-public List<TaskResponseDto> getAllNotCompletedTasks() {
-    List<Task> notCompletedTasks = taskRepository.findByCompletedIsFalse();
-    if (notCompletedTasks.isEmpty()) {
-        throw new ResourceNotFoundException("Tamamlanmamış görev bulunamadı");
+    //Yeniden eskiye tüm userlar için
+    public List<TaskResponseDto> getAllTaskOrderByStartDateNew() {
+        List<Task> taskList = taskRepository.findAllByOrderByStartDateDesc();
+        if (taskList.isEmpty()) {
+            throw new ResourceNotFoundException("Yeniden Eskiye Görev bulunamadı");
+        }
+        return taskList.stream().map(task -> modelMapper.map(task, TaskResponseDto.class)).collect(Collectors.toList());
     }
-    return notCompletedTasks.stream().map(task -> modelMapper.map(task, TaskResponseDto.class)).collect(Collectors.toList());
-}
 
-//Toplam görev sayısı tüm userlar için
-public Long countAllTask() {
-    return taskRepository.countAllBy();
-}
-
-//Tamamlanmış toplam görev sayısı tüm userlar için
-public Long countAllCompletedTasks() {
-    Long count = taskRepository.countByCompletedIsTrue();
-    if (count == 0) {
-        throw new ResourceNotFoundException("Tamamlanmış Görev Yok.");
+    //Tamamlanmış görevler tüm userlar için
+    public List<TaskResponseDto> getAllCompletedTasks() {
+        List<Task> completedTasks = taskRepository.findByCompletedIsTrue();
+        if (completedTasks.isEmpty()) {
+            throw new ResourceNotFoundException("Tamamlanmış görev bulunamadı");
+        }
+        return completedTasks.stream().map(task -> modelMapper.map(task, TaskResponseDto.class)).collect(Collectors.toList());
     }
-    return count;
-}
 
-
-//Userin tamamladığı görevler
-public List<TaskResponseDto> findByUserIdAndCompletedTrue(Long userId) {
-    List<Task> completedTasks = taskRepository.findByUserIdAndCompletedTrue(userId);
-    if (completedTasks.isEmpty()) {
-        throw new ResourceNotFoundException("Tamamlanmış Görev Yok.");
+    //Tamamlanmamış görevler tüm userlar için
+    public List<TaskResponseDto> getAllNotCompletedTasks() {
+        List<Task> notCompletedTasks = taskRepository.findByCompletedIsFalse();
+        if (notCompletedTasks.isEmpty()) {
+            throw new ResourceNotFoundException("Tamamlanmamış görev bulunamadı");
+        }
+        return notCompletedTasks.stream().map(task -> modelMapper.map(task, TaskResponseDto.class)).collect(Collectors.toList());
     }
-    return completedTasks.stream().map(task -> modelMapper.map(task, TaskResponseDto.class)).collect(Collectors.toList());
-}
+
+    //Toplam görev sayısı tüm userlar için
+    public Long countAllTask() {
+        return taskRepository.countAllBy();
+    }
+
+    //Tamamlanmış toplam görev sayısı tüm userlar için
+    public Long countAllCompletedTasks() {
+        Long count = taskRepository.countByCompletedIsTrue();
+        if (count == 0) {
+            throw new ResourceNotFoundException("Tamamlanmış Görev Yok.");
+        }
+        return count;
+    }
+
+
+    //Userin tamamladığı görevler
+    public List<TaskResponseDto> findByUserIdAndCompletedTrue(Long userId) {
+        List<Task> completedTasks = taskRepository.findByUserIdAndCompletedTrue(userId);
+        if (completedTasks.isEmpty()) {
+            throw new ResourceNotFoundException("Tamamlanmış Görev Yok.");
+        }
+        return completedTasks.stream().map(task -> modelMapper.map(task, TaskResponseDto.class)).collect(Collectors.toList());
+    }
 
 
 }

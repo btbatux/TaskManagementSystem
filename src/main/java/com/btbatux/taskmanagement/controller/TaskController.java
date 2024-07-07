@@ -1,23 +1,26 @@
 package com.btbatux.taskmanagement.controller;
 
-import com.btbatux.taskmanagement.dto.TaskRequestDto;
 import com.btbatux.taskmanagement.dto.TaskResponseDto;
 import com.btbatux.taskmanagement.dto.TaskUpdateDto;
 import com.btbatux.taskmanagement.model.Task;
 import com.btbatux.taskmanagement.service.TaskService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
 
     private final TaskService taskService;
+    private static final Logger logger = (Logger) LoggerFactory.getLogger(TaskController.class);
+
 
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
@@ -57,6 +60,8 @@ public class TaskController {
      */
     @PostMapping("/createTask")
     public ResponseEntity<TaskResponseDto> createTask(@RequestBody Task task) {
+        //Görev create edilirse loglansın.
+        logger.info("Görev oluşturulmaya başlandı Controller: " + task.getUser().getId() + " " + task.getUser());
         TaskResponseDto createdTask = taskService.saveTask(task);
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
