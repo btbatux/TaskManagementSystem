@@ -3,15 +3,22 @@ package com.btbatux.taskmanagement.controller;
 import com.btbatux.taskmanagement.dto.TaskResponseDto;
 import com.btbatux.taskmanagement.dto.TaskUpdateDto;
 import com.btbatux.taskmanagement.model.Task;
+import com.btbatux.taskmanagement.model.User;
+import com.btbatux.taskmanagement.service.EmailService;
 import com.btbatux.taskmanagement.service.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 
 @RestController
@@ -25,6 +32,9 @@ public class TaskController {
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
+
+    @Autowired
+    private EmailService emailService;
 
 
     /**
@@ -144,5 +154,15 @@ public class TaskController {
 
     }
 
+    @GetMapping("/endDateTask")
+    public Stream<User> sendTaskCompletionEmails() {
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        List<Task> tasks = taskService.findByEndDate(tomorrow);
+
+
+       return  tasks.stream().map(task -> task.getUser());
+
+
+    }
 }
 

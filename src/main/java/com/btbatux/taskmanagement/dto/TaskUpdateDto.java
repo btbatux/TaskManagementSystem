@@ -2,6 +2,7 @@ package com.btbatux.taskmanagement.dto;
 
 import com.btbatux.taskmanagement.model.User;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -10,7 +11,8 @@ public class TaskUpdateDto {
     private UUID id;
     private String title;
     private String description;
-    private LocalDateTime startDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private boolean completed;
 //    private Long userId;
 //
@@ -22,6 +24,14 @@ public class TaskUpdateDto {
 //    public void setUser(Long userId) {
 //        this.userId = userId;
 //    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
 
     public UUID getId() {
         return id;
@@ -47,11 +57,11 @@ public class TaskUpdateDto {
         this.description = description;
     }
 
-    public LocalDateTime getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 

@@ -3,6 +3,7 @@ package com.btbatux.taskmanagement.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -15,13 +16,22 @@ public class Task {
     @Column(nullable = false)
     private String title;
     private String description;
-    private LocalDateTime startDate; // Yeni eklenen başlangıç tarihi alanı
+    private LocalDate  startDate; // Yeni eklenen başlangıç tarihi alanı
+    private LocalDate endDate;
     private boolean completed;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
+
+    public LocalDate  getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate  endDate) {
+        this.endDate = endDate;
+    }
 
     public User getUser() {
         return user;
@@ -31,11 +41,11 @@ public class Task {
         this.user = user;
     }
 
-    public LocalDateTime getStartDate() {
+    public LocalDate  getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(LocalDate  startDate) {
         this.startDate = startDate;
     }
 

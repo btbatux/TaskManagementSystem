@@ -2,6 +2,7 @@ package com.btbatux.taskmanagement.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,6 +22,7 @@ public class User {
 
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Task> tasks;
 
 

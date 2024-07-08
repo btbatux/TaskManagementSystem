@@ -1,5 +1,6 @@
 package com.btbatux.taskmanagement.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -11,7 +12,8 @@ public class TaskResponseDto {
 
     private String title;
     private String description;
-    private LocalDateTime startDate; // Yeni eklenen başlangıç tarihi alanı
+    private LocalDate startDate; // Yeni eklenen başlangıç tarihi alanı
+    private LocalDate endDate;
     private boolean completed;
     private Long userId;
 
@@ -24,11 +26,19 @@ public class TaskResponseDto {
         this.userId = userId;
     }
 
-    public LocalDateTime getStartDate() {
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 

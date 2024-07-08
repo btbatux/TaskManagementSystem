@@ -1,4 +1,5 @@
 package com.btbatux.taskmanagement.service;
+
 import com.btbatux.taskmanagement.dto.TaskResponseDto;
 import com.btbatux.taskmanagement.dto.TaskUpdateDto;
 import com.btbatux.taskmanagement.exception.ResourceNotFoundException;
@@ -10,6 +11,9 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,13 +29,15 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
+    private final EmailService emailService;
     private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
-    public TaskService(TaskRepository taskRepository, ModelMapper modelMapper, UserRepository userRepository) {
+    public TaskService(TaskRepository taskRepository, ModelMapper modelMapper, UserRepository userRepository, EmailService emailService) {
         this.taskRepository = taskRepository;
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
 
+        this.emailService = emailService;
     }
 
 
@@ -68,15 +74,14 @@ public class TaskService {
      * @return TaskResponseDto - kaydedilen veya güncellenen görevin DTO'su
      */
     public TaskResponseDto saveTask(Task task) {
-        logger.info("Task Oluşturma  Servisi "+ task.getUser().getId() + " " + task.getTitle());
+        logger.info("Task Oluşturma  Servisi " + task.getUser().getId() + " " + task.getTitle());
         User user = userRepository.findById(task.getUser().getId()).orElseThrow(() ->
                 new ResourceNotFoundException("User not found. " + task.getUser().getId()));
         task.setUser(user);
-        logger.info("Task oluşturma başarılı "+ task.getUser().getId() + " " + task.getUser().getUsername());
+        logger.info("Task oluşturma başarılı " + task.getUser().getId() + " " + task.getUser().getUsername());
         return modelMapper.map(taskRepository.save(task), TaskResponseDto.class);
 
     }
-
 
 
     public TaskResponseDto taskUpdate(TaskUpdateDto taskUpdateDto) {
@@ -174,6 +179,10 @@ public class TaskService {
             throw new ResourceNotFoundException("Tamamlanmış Görev Yok.");
         }
         return completedTasks.stream().map(task -> modelMapper.map(task, TaskResponseDto.class)).collect(Collectors.toList());
+    }
+
+    public List <Task> findByEndDate(LocalDate tommorrow) {
+        return taskRepository.findByEndDate(tommorrow);
     }
 
 
